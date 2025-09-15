@@ -80,7 +80,7 @@ class WindowBoundsSchema(BaseModel):
 
 class InputWindowBoundsSchema(BaseModel):
     msgType: Optional[str] = None
-    coor: WindowBoundsSchema
+    coords: WindowBoundsSchema
 
 
 async def server(request, buses):
@@ -139,7 +139,7 @@ async def listen_browser(ws, bounds):
                 await ws.send_message(json.dumps({"errors": ["Requires msgType specified"], "msgType": "Errors"}))
                 continue
 
-            bounds.update(listen_msg.coor.south_lat, listen_msg.coor.north_lat, listen_msg.coor.west_lng, listen_msg.coor.east_lng)
+            bounds.update(listen_msg.coords.south_lat, listen_msg.coords.north_lat, listen_msg.coords.west_lng, listen_msg.coords.east_lng)
 
         except ValidationError:
             await ws.send_message(json.dumps({"errors": ["Requires valid JSON"], "msgType": "Errors"}))
