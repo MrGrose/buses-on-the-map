@@ -33,7 +33,6 @@ async def run_bus(route, bus_id, send_channel, refresh_timeout):
             break
 
 
-
 def relaunch_on_disconnect(async_function):
     @wraps(async_function)
     async def wrapper(*args, **kwargs):
@@ -50,8 +49,8 @@ def relaunch_on_disconnect(async_function):
 async def send_updates(server_address, receive_channel):
     async with open_websocket_url(server_address) as ws:
         logger.info("Соединение установлено")
-        async for value in receive_channel:
-            await ws.send_message(value)
+        async for route in receive_channel:
+            await ws.send_message(route)
 
 
 async def main():
