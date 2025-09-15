@@ -139,7 +139,7 @@ async def listen_browser(ws, bounds):
                 await ws.send_message(json.dumps({"errors": ["Requires msgType specified"], "msgType": "Errors"}))
                 continue
 
-            bounds.update(listen_msg.data.south_lat, listen_msg.data.north_lat, listen_msg.data.west_lng, listen_msg.data.east_lng)
+            bounds.update(listen_msg.coor.south_lat, listen_msg.coor.north_lat, listen_msg.coor.west_lng, listen_msg.coor.east_lng)
 
         except ValidationError:
             await ws.send_message(json.dumps({"errors": ["Requires valid JSON"], "msgType": "Errors"}))
