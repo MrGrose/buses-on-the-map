@@ -80,7 +80,7 @@ class WindowBoundsSchema(BaseModel):
 
 class InputWindowBoundsSchema(BaseModel):
     msgType: Optional[str] = None
-    data: WindowBoundsSchema
+    coor: WindowBoundsSchema
 
 
 async def server(request, buses):
@@ -88,13 +88,13 @@ async def server(request, buses):
     while True:
         try:
             message = await ws.get_message()
-            bus_routes = BusRoutesSchema.model_validate_json(message)
+            bus_route = BusRoutesSchema.model_validate_json(message)
 
-            if not bus_routes.buses:
+            if not bus_route.buses:
                 await ws.send_message(json.dumps({"errors": ["Requires busId specified"], "msgType": "Errors"}, ensure_ascii=False))
                 continue
 
-            for bus in bus_routes.buses:
+            for bus in bus_route.buses:
                 buses.buses[bus.busId] = bus
 
         except ValidationError:
