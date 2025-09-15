@@ -13,12 +13,12 @@ logger = logging.getLogger("fake_bus")
 
 
 async def run_bus(route, bus_id, send_channel, refresh_timeout):
-    try:
-        coordinates = route["coordinates"]
-        index = randint(0, len(coordinates) - 1)
-        while True:
-            coor = coordinates[index]
 
+    coordinates = route["coordinates"]
+    index = randint(0, len(coordinates) - 1)
+    while True:
+        try:
+            coor = coordinates[index]
             bus_route = {
                 "msgType": "Buses",
                 "buses": [{"busId": bus_id,"lat": coor[0],"lng": coor[1], "route": route["name"]}]
@@ -26,13 +26,12 @@ async def run_bus(route, bus_id, send_channel, refresh_timeout):
 
             await send_channel.send(json.dumps(bus_route, ensure_ascii=False))
             await trio.sleep(refresh_timeout)
-
             index = (index + 1) % len(coordinates)
 
-    except ConnectionClosed:
-        logger.error(f"Соединение закрыто {bus_id}")
-    except Exception as e:
-        logger.error(f"Ошибка {e}")
+        except ConnectionClosed:
+            logger.error(f"Соединение закрыто {bus_id}")
+            break
+
 
 
 def relaunch_on_disconnect(async_function):
